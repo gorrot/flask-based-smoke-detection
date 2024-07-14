@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<script src="static/jquery-3.5.1.js"></script>
+<h1 style="color:blue;text-align:center">煤场烟雾检测系统</h1>
+<h1 id="alarm-status">Loading...</h1>
+<script type = "text/javascript">
+    function reset() {
+        $.ajax({
+            url: '/alarm_dis',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({'js_alarm': false}),  // 确保数据格式正确
+            success: function(response) {
+                // 更新成功后获取最新的值并显示
+                console.log("更新成功", response);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('请求失败:', textStatus, errorThrown);
+            }
+        });
+        return false;
+    }
+
+    function clearlog() {
+        $.ajax({
+            type: 'POST',
+            url: '/clear_log',
+            success: function(data) {
+                // 处理成功的响应
+                if (data.status === 'success') {
+                    $('#responseMessage').text('日志已清除');
+                } else {
+                    $('#responseMessage').text('清除日志失败');
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('请求失败:', textStatus, errorThrown);
+                $('#responseMessage').text('发生错误');
+            }
+        });
+        return false;
+    }
+
+     function DT() {
+        $.ajax({
+            url: '/delay_detection',
+            type: 'POST',
+            success: function(response) {
+                console.log("检测状态已切换", response);
+                updateToggleButton(response.js_detection_paused);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('请求失败:', textStatus, errorThrown);
+            }
+        });
+        return false;
+    }
+
+     function updateToggleButton(isDetectionPaused) {
+      var toggleButton = $('#delaydetect');
+      if (isDetectionPaused) {
+        toggleButton.val('继续检测');
+        } else {
+        toggleButton.val('暂停检测');
+        }
+    }
+
+
+
+    $(document).ready(function() {
+        // 定期发起 AJAX 请求获取实时更新的数据
+        setInterval(function() {
+            $.ajax({
+                url: '/alarm_act',
+                method: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    // 在成功获取数据后更新元素内容
+                    if (response.js_alarm) {
+                        $('#alarm-status').text('检测到烟雾');
+                        $('#alarm-status').removeClass('normal').addClass('alarm');
+                        // playAlarmSound();
+                    } else {
+                        $('#alarm-status').text('正常');
+                        $('#alarm-status').removeClass('alarm').addClass('normal');
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error('Error occurred while fetching data:', textStatus, errorThrown);
+                }
+            });
+        }, 1000); // 每1秒更新一次
+    });
+    </script>
+<style>
+    .image-container1 {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    body {
+            background: linear-gradient(to right, #D8BFD8, #FFB6C1);
+        }
+
+    .image-container2 {
+        display: inline-block;
+        width: 30%;
+        border: 2px solid cornflowerblue;
+        max-width: 100%;
+    }
+    .image-container2 img {
+        display: block;
+        height: auto;
+        max-width: 100%;
+        }
+    .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px; /* 按钮之间的间距 */
+            position: fixed;
+            bottom: 20px;
+            width: 100%;
+        }
+
+    .button-container input[type="button"] {
+            width: 200px;
+            height: 50px;
+        }
+    @media (min-width: 2500px) {
+            .button-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .button-container input[type="button"] {
+                width: 120%; /* 按钮宽度调整为80% */
+            }
+        }
+
+    .alarm {
+      color: red;
+    }
+
+    .normal {
+      color: green;
+    }
+
+
+</style>
+<body>
+<div class="image-container1">
+
+    <div class="image-container2">
+    <img src="{{ url_for('video_feed') }}" >
+    <h2>实时视屏流</h2>
+    </div>
+
+   <div class="image-container2">
+   <img src="{{ url_for('capture_feed') }}" >
+    <h2>最近检测对象</h2>
+   </div>
+
+</div>
+<div class="button-container">
+        <input type="button" onclick="reset()" value="复位">
+        <input type="button" onclick="clearlog()" value="清除日志记录">
+        <input type="button" onclick="DT()" value="暂停检测">
+</div>
+
+</body>
+</html>

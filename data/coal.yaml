@@ -1,0 +1,10 @@
+# custom dataset
+train: D:\yolov5-master\expand_smoke\images\train
+val: D:\yolov5-master\expand_smoke\images\val
+test: D:\yolov5-master\expand_smoke\images\test
+
+# number of classes
+nc: 2
+
+# class names
+names: ['fume', 'smoke']

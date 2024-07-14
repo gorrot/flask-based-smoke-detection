@@ -1,0 +1,14 @@
+CUDA_VISIBLE_DEVICES=0 nohup python train.py --weights weights/yolov7-tiny.pt --cfg cfg/training/yolov7-tiny.yaml --hyp data/hyp.scratch.tiny.yaml --epochs 200 --batch-size 64 \
+    --label-smoothing 0.05 --name yolov7_tiny --exist-ok > yolov7-tiny.txt 2>&1 &
+
+CUDA_VISIBLE_DEVICES=1 nohup python train.py --weights weights/yolov7_training.pt --cfg cfg/training/yolov7.yaml --hyp data/hyp.scratch.custom.yaml --epochs 200 --batch-size 32 \
+    --label-smoothing 0.05 --name yolov7 --exist-ok > yolov7.txt 2>&1 &
+
+CUDA_VISIBLE_DEVICES=0 nohup python train_aux.py --img-size 1280 1280 --weights weights/yolov7-w6_training.pt --cfg cfg/training/yolov7-w6.yaml --hyp data/hyp.scratch.p6.yaml --epochs 200 --batch-size 8 \
+    --label-smoothing 0.05 --name yolov7_w6 --exist-ok > yolov7-w6.txt 2>&1 &
+
+python test.py --task test --weights runs/train/yolov7/weights/best.pt --device 0 --name yolov7
+python test.py --task test --weights runs/train/yolov7_tiny/weights/best.pt --device 1 --name yolov7_tiny
+python test.py --task test --weights runs/train/yolov7_w6/weights/best.pt --device 0 --name yolov7_w6
+
+python export.py --weights runs/train/yolov7_tiny/weights/best.pt --simplify --grid --end2end --max-wh 1980 --dynamic-batch --conf-thres 0.5 --iou-thres 0.45 --device cpu
