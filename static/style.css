@@ -1,0 +1,101 @@
+body {
+    display: flex;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.sidebar {
+    width: 200px;
+    background: #4B0082;
+    padding: 20px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow: auto;
+    color: white;
+}
+
+.sidebar a {
+    text-decoration: none;
+    color: white;
+    display: block;
+    padding: 10px 0;
+    font-size: 16px;
+}
+
+.sidebar a:hover {
+    background: #6A5ACD;
+}
+
+.main-content {
+    margin-left: 220px;
+    padding: 20px;
+    flex-grow: 1;
+}
+
+.image-container1 {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.image-container2 {
+    display: inline-block;
+    width: 30%;
+    border: 2px solid cornflowerblue;
+    max-width: 100%;
+}
+
+.image-container2 img {
+    display: block;
+    height: auto;
+    max-width: 100%;
+}
+
+.button-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px; /* 按钮之间的间距 */
+    position: fixed;
+    bottom: 20px;
+    width: 100%;
+}
+
+.button-container input[type="button"] {
+    width: 200px;
+    height: 50px;
+    background: #4B0082;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.alarm {
+    color: red;
+}
+
+.normal {
+    color: green;
+}
+
+h2 {
+    text-align: right;
+    margin: 20px;
+    font-size: 24px;
+}
+
+@media (min-width: 2500px) {
+    .button-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .button-container input[type="button"] {
+        width: 120%; /* 按钮宽度调整为80% */
+    }
+}

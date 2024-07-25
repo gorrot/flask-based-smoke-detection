@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}摄像头状态{% endblock %}
+
+{% block content %}
+<h1 style="color:blue;text-align:center">煤场烟雾检测系统</h1>
+<h2 id="alarm-status">Loading...</h2>
+<div class="image-container1">
+    <div class="image-container2">
+        <img src="{{ url_for('video_feed') }}" >
+        <h2>实时视屏流</h2>
+    </div>
+    <div class="image-container2">
+        <img src="{{ url_for('capture_feed') }}" >
+        <h2>最近检测对象</h2>
+    </div>
+</div>
+<div class="button-container">
+    <input type="button" onclick="reset()" value="复位">
+    <input type="button" onclick="clearlog()" value="清除日志记录">
+    <input type="button" onclick="Vibe_paused()" value="暂停Vibe背景检测" id="Vibepaused">
+    <input type="button" onclick="DT()" value="暂停yolo检测" id="delaydetect">
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='jquery-3.5.1.js') }}"></script>
+<script src="{{ url_for('static', filename='scripts.js') }}"></script>
+
+{% endblock %}
